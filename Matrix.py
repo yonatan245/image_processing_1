@@ -9,7 +9,7 @@ def get_matrix(path):
     for ln in lines:
         line = ln.split()
         new_mat = np.eye(3)
-        print(line[1])
+        # print(line[1])
 
         if(line[0] == 'S'):
             new_mat[0][0] = int(line[1])
