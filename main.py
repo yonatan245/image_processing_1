@@ -1,7 +1,8 @@
 import sys
-
 import cv2
 import numpy as np
+import bilinear as bi
+import cubic as cu
 
 
 from Matrix import get_matrix
@@ -21,59 +22,13 @@ def get_color(img, i, j, quality, inv_mat):
         if quality == 'N':
             return get_nearest_neighbor(img, or_pixel)
         elif quality == 'B':
-            return get_bilinear(img, or_pixel)
+            return bi.get_bilinear(img, or_pixel)
         else:
-            return get_cubic(img, or_pixel)
+            return cu.get_cubic(img, or_pixel)
 
 def get_nearest_neighbor(img, or_pixel):
     return img[int(or_pixel[0])][int(or_pixel[1])]
 
-def get_bilinear(img, or_pixel):
-    (p1, p2, p3, p4) = get_quarter_pixels(or_pixel)
-
-    if is_near_edge(len(img), len(img[0]), [p1, p2, p3, p4]):
-        return get_nearest_neighbor(img, or_pixel)
-
-    ph = get_horizontal_avg(img, or_pixel, p1, p2)
-    pl = get_horizontal_avg(img, or_pixel, p3, p4)
-
-    return get_vertical_avg(or_pixel, p1, p3, ph, pl)
-
-def get_cubic(img, or_pixel):
-    return 0
-
-def get_quarter_pixels(or_pixel):
-    (horizontal, vertical) = (0, 0)
-
-    if 0.5 > or_pixel[0] - int(or_pixel[0]) > 0:
-        vertical = -1
-    if 0.5 > or_pixel[1] - int(or_pixel[1]) > 0:
-        horizontal = -1
-
-    p1 = (int(or_pixel[0] + vertical), int(or_pixel[1] + horizontal))
-    p2 = (int(or_pixel[0] + vertical + 1), int(or_pixel[1] + horizontal))
-    p3 = (int(or_pixel[0] + vertical), int(or_pixel[1] + horizontal + 1))
-    p4 = (int(or_pixel[0] + vertical + 1), int(or_pixel[1] + horizontal + 1))
-
-    return p1, p2, p3, p4
-
-def get_horizontal_avg(img, or_pixel, p1, p2):
-    w1 = p2[0] - or_pixel[0]
-    w2 = or_pixel[0] - p1[0]
-
-    return w1 * img[p1] + w2 * img[p2]
-
-def get_vertical_avg(or_pixel, p1, p3, pl, ph):
-    w1 = p3[1] - or_pixel[1]
-    w2 = or_pixel[1] - p1[1]
-
-    return w1 * pl + w2 * ph
-
-def is_near_edge(height, width, points):
-    for p in points:
-        if p[0] < 0 or p[0] >= height or p[1] < 0 or p[1] >= width:
-            return True
-    return False
 
 
 if __name__ == '__main__':
@@ -98,9 +53,6 @@ if __name__ == '__main__':
 
     trans_w = int(mat[2, 0])
     trans_h = int(mat[2, 1])
-
-    print(f'trans_w = {trans_w}\n'
-          f'trnas_h = {trans_h}')
 
     p1 = np.matmul(mat, [0, 0, 1])
     p2 = np.matmul(mat, [len(img), 0, 1])
