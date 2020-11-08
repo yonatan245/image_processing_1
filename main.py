@@ -45,15 +45,15 @@ def get_cubic(img, or_pixel):
 def get_quarter_pixels(or_pixel):
     (horizontal, vertical) = (0, 0)
 
-    if or_pixel[0] - int(or_pixel[0]) < 0.5:
+    if 0.5 > or_pixel[0] - int(or_pixel[0]) > 0:
         vertical = -1
-    if or_pixel[1] - int(or_pixel[1]) < 0.5:
+    if 0.5 > or_pixel[1] - int(or_pixel[1]) > 0:
         horizontal = -1
 
-    p1 = (or_pixel[0] + vertical, or_pixel[1] + horizontal)
-    p2 = (or_pixel[0] + vertical, or_pixel[1] + horizontal + 1)
-    p3 = (or_pixel[0] + vertical + 1, or_pixel[1] + horizontal)
-    p4 = (or_pixel[0] + vertical + 1, or_pixel[1] + horizontal + 1)
+    p1 = (int(or_pixel[0] + vertical), int(or_pixel[1] + horizontal))
+    p2 = (int(or_pixel[0] + vertical + 1), int(or_pixel[1] + horizontal))
+    p3 = (int(or_pixel[0] + vertical), int(or_pixel[1] + horizontal + 1))
+    p4 = (int(or_pixel[0] + vertical + 1), int(or_pixel[1] + horizontal + 1))
 
     return p1, p2, p3, p4
 
@@ -71,7 +71,7 @@ def get_vertical_avg(or_pixel, p1, p3, pl, ph):
 
 def is_near_edge(height, width, points):
     for p in points:
-        if p[0] < 0 or p[0] > height or p[1] < 0 or p[1] > width:
+        if p[0] < 0 or p[0] >= height or p[1] < 0 or p[1] >= width:
             return True
     return False
 
@@ -96,13 +96,16 @@ if __name__ == '__main__':
     #                 [0, 2, 0],
     #                 [200, 500, 1]])
 
-    trans_h = int(mat[2, 0])
-    trans_w = int(mat[2, 1])
+    trans_w = int(mat[2, 0])
+    trans_h = int(mat[2, 1])
 
-    p1 = np.matmul(mat, [0,0,1])
-    p2 = np.matmul(mat, [len(img),0,1])
-    p3 = np.matmul(mat, [0,len(img[0]),1])
-    p4 = np.matmul(mat, [len(img),len(img[0]),1])
+    print(f'trans_w = {trans_w}\n'
+          f'trnas_h = {trans_h}')
+
+    p1 = np.matmul(mat, [0, 0, 1])
+    p2 = np.matmul(mat, [len(img), 0, 1])
+    p3 = np.matmul(mat, [0, len(img[0]), 1])
+    p4 = np.matmul(mat, [len(img), len(img[0]), 1])
 
     min_h = int(min(p1[0], p2[0], p3[0], p4[0]))
     max_h = int(max(p1[0], p2[0], p3[0], p4[0]))
@@ -112,11 +115,11 @@ if __name__ == '__main__':
     h_off = np.abs(min(0, min_h))
     w_off = np.abs(min(0, min_w))
 
-    new_img = np.zeros((max_h - min_h + trans_h, max_w - min_w + trans_w), dtype=int)
+    new_img = np.zeros((max_h - min_h + abs(trans_h), max_w - min_w + abs(trans_w)), dtype=int)
 
     for i in range(len(new_img)):
         for j in range(len(new_img[0])):
-            new_img[i, j] = int(get_color(img, i - h_off - trans_h, j - w_off - trans_w, quality, inv_mat))
+            new_img[i, j] = int(get_color(img, i - h_off - abs(trans_h), j - w_off - abs(trans_w), quality, inv_mat))
 
 
             # pixel = [i - h_off - trans_h, j - w_off - trans_w, 1]
@@ -141,8 +144,7 @@ if __name__ == '__main__':
 
     # print(mat)
     # print(img)
-    print(new_img)
     cv2.imwrite('new_img.png', new_img)
-    cv2.imshow('ziv', new_img)
+    cv2.imshow(new_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
