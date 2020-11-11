@@ -67,10 +67,12 @@ if __name__ == '__main__':
     h_off = np.abs(min(0, min_h))
     w_off = np.abs(min(0, min_w))
 
-    new_img = np.zeros((max_h - min_h + abs(trans_h), max_w - min_w + abs(trans_w)), dtype=int)
+    new_img = np.zeros((max_h - min_h + abs(trans_h), max_w - min_w + abs(trans_w)), dtype=np.float)
+    # new_img[1032, 783] = int(get_color(img, 1032 - h_off - abs(trans_h), 783 - w_off - abs(trans_w), quality, inv_mat))
 
     for i in range(len(new_img)):
         for j in range(len(new_img[0])):
+            print("i: ", i, " j: ", j)
             new_img[i, j] = int(get_color(img, i - h_off - abs(trans_h), j - w_off - abs(trans_w), quality, inv_mat))
 
 
@@ -97,6 +99,6 @@ if __name__ == '__main__':
     # print(mat)
     # print(img)
     cv2.imwrite('new_img.png', new_img)
-    cv2.imshow(new_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow(new_img)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
