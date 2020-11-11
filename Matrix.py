@@ -12,8 +12,8 @@ def get_matrix(path):
         # print(line[1])
 
         if(line[0] == 'S'):
-            new_mat[0][0] = int(line[1])
-            new_mat[1][1] = int(line[2])
+            new_mat[0][0] = float(line[1])
+            new_mat[1][1] = float(line[2])
 
         if(line[0] == 'T'):
             new_mat[2][0] = int(line[1])

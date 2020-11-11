@@ -30,9 +30,7 @@ def get_nearest_neighbor(img, or_pixel):
     return img[int(or_pixel[0])][int(or_pixel[1])]
 
 
-
 if __name__ == '__main__':
-
     img_path = sys.argv[1]
     txt_path = sys.argv[2]
     quality = sys.argv[3]
@@ -40,16 +38,6 @@ if __name__ == '__main__':
     img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2GRAY)
     mat = get_matrix(txt_path)
     inv_mat = np.linalg.inv(mat)
-
-    # ang = 34 * np.pi / 180
-    #
-    # mat = np.array([[2*np.cos(ang), np.sin(ang), 0],
-    #                 [-np.sin(ang), 2*np.cos(ang), 0],
-    #                 [20, 50, 1]])
-
-    # mat = np.array([[2, 0, 0],
-    #                 [0, 2, 0],
-    #                 [200, 500, 1]])
 
     trans_w = int(mat[2, 0])
     trans_h = int(mat[2, 1])
@@ -68,12 +56,20 @@ if __name__ == '__main__':
     w_off = np.abs(min(0, min_w))
 
     new_img = np.zeros((max_h - min_h + abs(trans_h), max_w - min_w + abs(trans_w)), dtype=np.float)
-    # new_img[1032, 783] = int(get_color(img, 1032 - h_off - abs(trans_h), 783 - w_off - abs(trans_w), quality, inv_mat))
+
+    if trans_h < 0:
+        # h_off += trans_h
+        trans_h = 0
+
+    if trans_w < 0:
+        # w_off += trans_w
+        trans_w = 0
 
     for i in range(len(new_img)):
         for j in range(len(new_img[0])):
-            # print("i: ", i, " j: ", j)
-            new_img[i, j] = int(get_color(img, i - h_off - abs(trans_h), j - w_off - abs(trans_w), quality, inv_mat))
+
+            # if 0 <= i + trans_h < len(new_img) and 0 <= j + trans_w < len(new_img[0]):
+            new_img[i, j] = int(get_color(img, i - h_off - trans_h, j - w_off - trans_w, quality, inv_mat))
 
 
             # pixel = [i - h_off - trans_h, j - w_off - trans_w, 1]
