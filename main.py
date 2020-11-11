@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     for i in range(len(new_img)):
         for j in range(len(new_img[0])):
-            print("i: ", i, " j: ", j)
+            # print("i: ", i, " j: ", j)
             new_img[i, j] = int(get_color(img, i - h_off - abs(trans_h), j - w_off - abs(trans_w), quality, inv_mat))
 
 
