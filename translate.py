@@ -1,8 +1,8 @@
-import sys
 import cv2
 import numpy as np
 import bilinear as bi
 import cubic as cu
+import argparse as arg
 
 
 from Matrix import get_matrix
@@ -31,9 +31,34 @@ def get_nearest_neighbor(img, or_pixel):
 
 
 if __name__ == '__main__':
-    img_path = sys.argv[1]
-    txt_path = sys.argv[2]
-    quality = sys.argv[3]
+
+    parser = arg.ArgumentParser()
+    parser.add_argument('image', help='Source image file')
+    parser.add_argument('tran', help='Transformation file. '
+                                     'Transformation file includes one transformation at each line and each transformation have the following format:'
+                                     ' \"A x y\" '
+                                     'Where A is the transformation type letter: T for translate, S for scale, and R for rotate; '
+                                     'and x and y are the transformation arguments. '
+                                     ''
+                                     'Transformation example: '
+                                     'S 10 2 '
+                                     'T 50 100 '
+                                     'R 30 0 '
+                                     ''
+                                     'This transformation: '
+                                     '  1. Scales the image by 10x2 (height x width) '
+                                     '  2. Moves the image 50 pixels down and 100 to the right. in order to move '
+                                     '     up / left, negative values can be used. '
+                                     '  3. Rotates the image by 30 degrees.')
+    parser.add_argument('quality', help='New image interpolation quality. '
+                                        'N - Nearest neighbor '
+                                        'B - Bilinear interpolation '
+                                        'C - Cubic interpolation (default) ')
+
+    args = parser.parse_args()
+    img_path = args.image
+    txt_path = args.tran
+    quality = args.quality
 
     img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2GRAY)
     mat = get_matrix(txt_path)

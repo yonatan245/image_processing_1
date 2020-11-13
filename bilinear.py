@@ -1,10 +1,10 @@
-import main
+import translate
 
 def get_bilinear(img, or_pixel):
     (p1, p2, p3, p4) = get_quarter_pixels(or_pixel)
 
     if is_near_edge(len(img), len(img[0]), [p1, p2, p3, p4]):
-        return main.get_nearest_neighbor(img, or_pixel)
+        return translate.get_nearest_neighbor(img, or_pixel)
 
     ph = get_horizontal_avg(img, or_pixel, p1, p2)
     pl = get_horizontal_avg(img, or_pixel, p3, p4)

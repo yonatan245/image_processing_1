@@ -1,13 +1,13 @@
 import numpy as np
 
-import main
+import translate
 
 
 def get_cubic(img, or_pixel):
     pixels = get_quarter_pixels(or_pixel)
 
     if is_near_edge(len(img), len(img[0]), pixels):
-        return main.get_nearest_neighbor(img, or_pixel)
+        return translate.get_nearest_neighbor(img, or_pixel)
 
     output = 0
 
