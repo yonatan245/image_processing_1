@@ -83,43 +83,18 @@ if __name__ == '__main__':
     new_img = np.zeros((max_h - min_h + abs(trans_h), max_w - min_w + abs(trans_w)), dtype=np.float)
 
     if trans_h < 0:
-        # h_off += trans_h
         trans_h = 0
 
     if trans_w < 0:
-        # w_off += trans_w
         trans_w = 0
 
     for i in range(len(new_img)):
         for j in range(len(new_img[0])):
-
-            # if 0 <= i + trans_h < len(new_img) and 0 <= j + trans_w < len(new_img[0]):
             new_img[i, j] = int(get_color(img, i - h_off - trans_h, j - w_off - trans_w, quality, inv_mat))
 
-
-            # pixel = [i - h_off - trans_h, j - w_off - trans_w, 1]
-            # or_pixel = np.matmul(inv_mat, pixel)
-            #
-            # if not check_range(or_pixel, len(img), len(img[0])):
-            #     new_img[i, j] = 0
-            # else:
-            #     new_img[i, j] = img[int(or_pixel[0])][int(or_pixel[1])]
+    cv2.imwrite('new_img.jpg', new_img)
+    cv2.imshow('New Image', cv2.imread('new_img.jpg'))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
-
-            # or_pixel[0] = int(min(or_pixel[0], len(img)-1))
-            # or_pixel[1] = int(min(or_pixel[1], len(img[0])-1))
-
-            # print(or_pixel)
-            # new_img[i][j] = int(img[int(np.floor(or_pixel[0]))][int(np.floor(or_pixel[1]))])
-            # new_img[i][j] = img[int(np.floor(or_pixel[0]))][int(np.floor(or_pixel[1]))]
-
-
-
-
-    # print(mat)
-    # print(img)
-    cv2.imwrite('new_img.png', new_img)
-    # cv2.imshow(new_img)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
